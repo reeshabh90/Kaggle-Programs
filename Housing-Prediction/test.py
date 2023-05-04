@@ -28,7 +28,6 @@ from sklearn.model_selection import train_test_split
 # the random_state argument guarantees we get the same split every time we
 # run this script.
 train_X, val_X, train_y, val_y = train_test_split(X, y, random_state = 0)
-print(val_y)
 # Define model
 melbourne_model = DecisionTreeRegressor()
 # Fit model
@@ -36,7 +35,7 @@ melbourne_model.fit(train_X, train_y)
 
 # get predicted prices on validation data
 val_predictions = melbourne_model.predict(val_X)
-print(mean_absolute_error(val_y, val_predictions))
+print("Decison tree Regressor MAE : ", mean_absolute_error(val_y, val_predictions))
 
 #We can use a utility function to help compare MAE scores from different values for max_leaf_nodes:
 def get_mae(max_leaf_nodes, train_X, val_X, train_y, val_y):
@@ -55,8 +54,17 @@ for max_leaf_nodes in candidate_max_leaf_nodes:
 scores = {leaf_size: get_mae(leaf_size, train_X, val_X, train_y, val_y) for leaf_size in candidate_max_leaf_nodes}
 best_tree_size = min(scores, key=scores.get)
 
-# Fill in argument to make optimal size and uncomment
 final_model = DecisionTreeRegressor(max_leaf_nodes=best_tree_size, random_state=1)
-
-# fit the final model and uncomment the next two lines
 final_model.fit(X, y)
+
+# Trying Random Forest Regressor:
+# The random forest uses many trees, and it makes a prediction by averaging the predictions
+# of each component tree. It generally has much better predictive accuracy than a single decision tree
+# and it works well with default parameters.
+from sklearn.ensemble import RandomForestRegressor
+forest_model = RandomForestRegressor(random_state=1)
+forest_model.fit(train_X, train_y)
+melb_preds = forest_model.predict(val_X)
+print("Random Forest MAE : ", mean_absolute_error(val_y, melb_preds))
+rf_model = RandomForestRegressor(random_state=1)
+rf_model.fit(X, y)
